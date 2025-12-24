@@ -5,3 +5,4 @@ openai
 pydantic
 httpx
 redis
+numpy<2.0
