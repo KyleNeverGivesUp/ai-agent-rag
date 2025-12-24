@@ -1,3 +1,5 @@
+# Project ignores: keep generated caches, env files, and service data out of git
+
 # Python
 __pycache__/
 *.pyc
