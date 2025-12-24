@@ -3,31 +3,29 @@ from pydantic import BaseModel
 import os
 import chromadb
 
-
 app = FastAPI()
 
 @app.get("/health")
 def health():
     return {"ok": True, "service": "ai-backend"}
 
+class DocumentRequest(BaseModel):
+    content: str
+    title: str = "untitled"
+
 class ChatRequest(BaseModel):
     message: str
+
+chroma_client = chromadb.HttpClient(
+    host="chromadb",
+    port=8000,
+)
 
 @app.post("/chat")
 def chat(req: ChatRequest):
     return{
         "reply": req.message
     }
-
-chroma_client = chromadb.Client()
-
-class DocumentRequest(BaseModel):
-    content: str
-    title: str = "untitled"
-
-class SearchRequest(BaseModel):
-    query: str
-    top_k: int = 3
 
 @app.post("/documents")
 def upload_document(doc: DocumentRequest):
@@ -42,7 +40,6 @@ def upload_document(doc: DocumentRequest):
             ids=[doc.title],
             metadatas=[{"title": doc.title}]
         )
-
         return {
             "status": "success",
             "title": doc.title,
@@ -53,34 +50,50 @@ def upload_document(doc: DocumentRequest):
             "status": "error",
             "message": str(e)
         }
+    
+@app.get("/documents/count")
+def docuemnts_count():
+    collection = chroma_client.get_or_create_collection(
+        name="documents",
+        metadata={"hnsw:space": "cosine"}
+    )
+    return {"count": collection.count()}
 
-@app.post("/search")
-def search(req: SearchRequest):
-    try:
-        collection = chroma_client.get_or_create_collection(
-            name="documents",
-            metadata={"hnsw:space": "cosine"}
-        )
+@app.get("/")
+def index():
+    return {
+        "ok": True,
+        "routes": [
+            "/health",
+            "/chat",
+            "/documents",
+            "/documents/count"
+        ]
+    }
 
-        res = collection.query(
-            query_texts=[req.query],
-            n_results=max(1, req.top_k)
-        )
+@app.get("/documents/peek")
+def documents_peek(limit: int = 5):
+    collection = chroma_client.get_or_create_collection(
+        name="documents",
+        metadata={"hnsw:space": "cosine"}
+    )
+    data = collection.peek(limit)
+    return {
+        "ids": data.get("ids", []),
+        "documents": data.get("documents", []),
+        "metadatas": data.get("metadatas", [])
+    }
 
-        # Normalize Chroma response shape
-        hits = []
-        ids = res.get("ids", [[]])[0]
-        docs = res.get("documents", [[]])[0]
-        metas = res.get("metadatas", [[]])[0]
-        dists = res.get("distances", [[]])[0] or res.get("embeddings", [[]])[0]
-        for i in range(len(docs)):
-            hits.append({
-                "id": ids[i] if i < len(ids) else None,
-                "document": docs[i],
-                "metadata": metas[i] if i < len(metas) else None,
-                "score": dists[i] if i < len(dists) else None
-            })
 
-        return {"query": req.query, "results": hits}
-    except Exception as e:
-        return {"status": "error", "message": str(e)}
+@app.get("/documents/{doc_id}")
+def get_document(doc_id: str):
+    collection = chroma_client.get_or_create_collection(
+        name="documents",
+        metadata={"hnsw:space": "cosine"}
+    )
+    res = collection.get(ids=[doc_id], include=["documents", "metadatas"])
+    return {
+        "id": (res.get("ids") or [None])[0],
+        "document": (res.get("documents") or [None])[0],
+        "metadata": (res.get("metadatas") or [None])[0]
+    }
