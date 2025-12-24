@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+
+
+# Env & secrets
+.env
+
+# runtime data
+pg-data/
+postgres-data/
+chroma-data/
+redis-data/
+
+#node
+node-bff/node_modules/
+node_modules/
+
+# OS
+.DS_Store
