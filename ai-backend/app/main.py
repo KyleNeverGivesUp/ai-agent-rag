@@ -13,5 +13,5 @@ class ChatRequest(BaseModel):
 @app.post("/chat")
 def chat(req: ChatRequest):
     return{
-        "reply": f"{req.message}"
+        "reply": req.message
     }
