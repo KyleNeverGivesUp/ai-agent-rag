@@ -37,6 +37,7 @@ services:
 
   ai-backend:
     build: ./ai-backend
+    restart: always
     extra_hosts:
       - "host.docker.internal:host-gateway" # 映射宿主机网关
     env_file:
