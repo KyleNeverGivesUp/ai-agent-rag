@@ -6,8 +6,8 @@ from openai import OpenAI
 import time
 import numpy as np
 
+# initial LLM authentication
 client_llm = OpenAI(
-
     api_key=os.getenv("OPENROUTER_API_KEY"),
     base_url="https://openrouter.ai/api/v1",
     default_headers={
