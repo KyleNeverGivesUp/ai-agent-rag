@@ -7,11 +7,10 @@ import time
 import numpy as np
 
 client_llm = OpenAI(
-    # 只在这里传 Key，不要在下面的 headers 里重复传
+
     api_key=os.getenv("OPENROUTER_API_KEY"),
     base_url="https://openrouter.ai/api/v1",
     default_headers={
-        # 这两个是 OpenRouter 建议（非强制）的，有助于识别流量
         "HTTP-Referer": "http://localhost:8000", 
         "X-Title": "My-FastAPI-App",
     },
@@ -26,7 +25,7 @@ collection = None
 def startup():
     global client, collection
     print(f"DEBUG: OpenRouter Key is {os.getenv('OPENROUTER_API_KEY')}")
-    for i in range(10):  # 最多等 10 次
+    for i in range(10):
         try:
             print(f"Connecting to ChromaDB... attempt {i+1}")
             client = chromadb.HttpClient(
@@ -58,7 +57,7 @@ def ingest(req: IngestRequest):
 
 @app.post("/chat")
 def chat(req: ChatRequest):
-    # 1. 向量检索
+    # 1. vector retrieval
     result = collection.query(
         query_texts=[req.query],
         n_results=3
@@ -68,7 +67,7 @@ def chat(req: ChatRequest):
 
     context = "\n".join(docs)
 
-    # 2. 构造 prompt
+    # 2. constrcut prompt
     messages = [
         {
             "role": "system",
@@ -80,7 +79,7 @@ def chat(req: ChatRequest):
         }
     ]
 
-    # 3. 调 OpenRouter
+    # 3. call remote LLM
     response = client_llm.chat.completions.create(
         model=os.getenv("OPENROUTER_MODEL"),
         messages=messages,
