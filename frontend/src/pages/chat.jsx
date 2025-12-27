@@ -19,7 +19,8 @@ export default function Chat() {
   }, [navigate]);
 
   const token = useMemo(() => localStorage.getItem("access_token"), []);
-  const apiUrl = "http://localhost:8000/chat";
+  const apiUrl =
+    import.meta.env.VITE_BACKEND_ALIAS || "http://localhost:8000/chat";
 
   const handleLogout = () => {
     localStorage.removeItem("access_token");
