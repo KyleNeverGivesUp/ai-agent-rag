@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Kyle's Chatbot</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <nav>
+        <div class="logo">KYLE.HU</div>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+        </ul>
+    </nav>
+
+    <div class="login-wrapper">
+        <div class="login-card">
+            <h2>Welcome Back</h2>
+            <p>Please login to access the RAG Chatbot</p>
+            
+            <form id="loginForm">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="username" placeholder="Username" required>
+                </div>
+                
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" placeholder="Password" required>
+                </div>
+
+                <button type="submit" class="login-btn">
+                    Login <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+            <p id="error-msg" style="color: red; margin-top: 10px; display: none;"></p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:8000/token"; // ⚠️ Replace with your actual FastAPI backend URL
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault(); // Stop page from reloading
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('error-msg');
+
+            // 1. Prepare Form Data (OAuth2PasswordRequestForm usually expects form-data)
+            const formData = new URLSearchParams();
+            formData.append('username', username);
+            formData.append('password', password);
+
+            try {
+                // 2. Send POST request to backend
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Login failed');
+                }
+
+                const data = await response.json();
+
+                // 3. Store the JWT Token in LocalStorage
+                // backend response usually looks like: { "access_token": "...", "token_type": "bearer" }
+                localStorage.setItem('access_token', data.access_token);
+
+                // 4. Redirect to the Chat Interface
+                window.location.href = 'chat.html'; 
+
+            } catch (error) {
+                console.error('Error:', error);
+                errorMsg.innerText = "Invalid username or password.";
+                errorMsg.style.display = "block";
+            }
+        });
+    </script>
+</body>
+</html>
