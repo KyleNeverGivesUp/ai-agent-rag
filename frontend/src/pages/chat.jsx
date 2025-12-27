@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 export default function Chat() {
   const navigate = useNavigate();
   const [messages, setMessages] = useState([
-    { role: "assistant", content: "Welcome to the RAG Chatbot! Ask me anything regarding UCSD." },
+    { role: "assistant", content: "Welcome to the RAG Chatbot based on Llama v3.3. Ask me anything regarding UCSD." },
   ]);
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -98,7 +98,7 @@ export default function Chat() {
             onChange={(event) => setInput(event.target.value)}
             disabled={isSending}
           />
-          <button type="submit" className="login-btn" disabled={isSending}>
+          <button type="submit" className="chat-btn" disabled={isSending}>
             {isSending ? "Sending..." : "Send"}
           </button>
         </form>

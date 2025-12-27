@@ -263,7 +263,7 @@ h2 {
 
 /* 5. The Login Button */
 .login-btn {
-    width: 10%;
+    width: 100%;
     padding: 14px;
     background-color: var(--primary-color);
     color: white;
@@ -278,6 +278,8 @@ h2 {
     align-items: center;
     gap: 10px; /* Space between text and arrow icon */
 }
+
+
 
 .login-btn:hover {
     background-color: #6a1010; /* Darker red */
@@ -389,6 +391,23 @@ h2 {
     border-radius: 8px;
     border: 1px solid #ddd;
     font-size: 1rem;
+}
+
+.chat-btn {
+    width: 10%;
+    padding: 14px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* Space between text and arrow icon */
 }
 
 .chat-input input:focus {
