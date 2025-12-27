@@ -149,3 +149,131 @@ h2 {
     header h1 { font-size: 2.5rem; }
     nav ul { display: none; } 
 }
+
+
+/* =========================================
+   Login Page Specific Styles
+   (Append this to the bottom of style.css)
+   ========================================= */
+
+/* 1. Login Page Container (Centers the card) */
+.login-wrapper {
+    /* Takes up full viewport height */
+    min-height: 100vh;
+    width: 100%;
+    
+    /* Flexbox centering magic */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* Background consistent with Hero section */
+    background: linear-gradient(135deg, #fff 0%, #ebebeb 100%);
+    
+    /* Prevent content from hiding behind fixed Navbar */
+    padding-top: 80px; 
+}
+
+/* 2. The White Card */
+.login-card {
+    background: white;
+    padding: 3rem;
+    width: 100%;
+    max-width: 400px; /* Limits width on big screens */
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.login-card:hover {
+    transform: translateY(-5px); /* Subtle lift effect */
+}
+
+/* 3. Typography inside Card */
+.login-card h2 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+}
+
+.login-card p {
+    color: #666;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+}
+
+/* 4. Input Fields Styling */
+.input-group {
+    position: relative; /* For icon positioning */
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.input-group i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+    font-size: 1rem;
+    pointer-events: none; /* Let clicks pass through to input */
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 15px 12px 45px; /* Padding-left makes room for icon */
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fcfcfc;
+    transition: all 0.3s ease;
+}
+
+/* Focus State (Active) */
+.input-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background-color: white;
+    box-shadow: 0 0 0 4px rgba(140, 21, 21, 0.1); /* Glow effect */
+}
+
+.input-group input:focus + i {
+    color: var(--primary-color);
+}
+
+/* 5. The Login Button */
+.login-btn {
+    width: 100%;
+    padding: 14px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* Space between text and arrow icon */
+}
+
+.login-btn:hover {
+    background-color: #6a1010; /* Darker red */
+    transform: translateY(-2px);
+}
+
+.login-btn:active {
+    transform: translateY(0);
+}
+
+/* 6. Error Message */
+#error-msg {
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    background-color: rgba(255, 0, 0, 0.05);
+}

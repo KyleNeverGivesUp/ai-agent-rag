@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Chat Interface</title>
+</head>
+<body>
+    <h1>Welcome to the RAG Chatbot!</h1>
+    <button onclick="logout()">Logout</button>
+
+    <script>
+        // Check if token exists, if not, kick back to login
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+
+        // Logout Logic
+        function logout() {
+            localStorage.removeItem('access_token');
+            window.location.href = 'login.html';
+        }
+        
+        // When sending messages to your FastAPI backend, use this:
+        // headers: { 'Authorization': `Bearer ${token}` }
+    </script>
+</body>
+</html>
