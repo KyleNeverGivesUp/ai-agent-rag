@@ -12,8 +12,8 @@ client_llm = OpenAI(
     api_key=os.getenv("OPENROUTER_API_KEY"),
     base_url="https://openrouter.ai/api/v1",
     default_headers={
-        "HTTP-Referer": "http://localhost:8000", 
-        "X-Title": "My-FastAPI-App",
+        "HTTP-Referer": os.getenv("APP_ORIGIN", "http://localhost:8000"),
+        "X-Title": os.getenv("APP_NAME", "My-FastAPI-App"),
     },
 )
 
