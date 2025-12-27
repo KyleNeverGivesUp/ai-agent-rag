@@ -14,6 +14,7 @@ export default function Home() {
           </li>
           <li>
             <Link to="/login" className="chatbot-btn">
+              <span className="new-badge" aria-label="new feature">NEW</span>
               Chatbot
             </Link>
           </li>

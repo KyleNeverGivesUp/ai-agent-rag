@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 export default function Chat() {
   const navigate = useNavigate();
   const [messages, setMessages] = useState([
-    { role: "assistant", content: "Welcome to the RAG Chatbot! Ask me anything." },
+    { role: "assistant", content: "Welcome to the RAG Chatbot! Ask me anything regarding UCSD." },
   ]);
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -76,7 +76,7 @@ export default function Chat() {
     <div className="chat-page">
       <div className="chat-card">
         <div className="chat-header">
-          <h1>RAG Chatbot</h1>
+          <h1>Kyle's Chatbot</h1>
           <button className="ghost-btn" onClick={handleLogout}>
             Logout
           </button>
