@@ -22,6 +22,8 @@ export default function Chat() {
   const apiUrl =
     import.meta.env.VITE_BACKEND_ALIAS || "http://localhost:8000/chat";
 
+  console.log("VITE_BACKEND_ALIAS:", import.meta.env.VITE_BACKEND_ALIAS);
+
   const handleLogout = () => {
     localStorage.removeItem("access_token");
     navigate("/login");
