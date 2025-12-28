@@ -22,7 +22,7 @@ export default function Chat() {
 
   const apiUrl = "http://143.110.228.170:8000/chat";
 
-  console.log("VITE_BACKEND_ALIAS:", import.meta.env.VITE_BACKEND_ALIAS);
+  console.log(apiUrl);
 
   const handleLogout = () => {
     localStorage.removeItem("access_token");
