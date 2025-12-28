@@ -14,7 +14,7 @@ pipeline {
       }
     }
 
-    stage('Deploy') {
+    stage('Deploy')  {
       steps {
         sh '''
           cd /home/kyle/Projects/ai-agent-rag
