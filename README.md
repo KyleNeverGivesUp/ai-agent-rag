@@ -9,7 +9,10 @@ This project currently provides a robust MVP covering ingestion, retrieval, and 
 
 ---
 
-## 🌟 Features Overview
+## 🔥 Highlights
+- End-to-end: React → FastAPI → LLM (RAG), complete request path with retrieval grounding.
+- DevOps: CI/CD + Nginx + Docker Compose + HTTP/SSL, eliminating manual release errors and enabling automation.
+- Full-stack productionization: self-hosted pipeline from code to deployment, real-world readiness.
 
 ### ✅ Core Architecture (Completed)
 The foundation of the system is fully operational:
