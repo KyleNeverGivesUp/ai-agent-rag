@@ -19,8 +19,7 @@ export default function Chat() {
   }, [navigate]);
 
   const token = useMemo(() => localStorage.getItem("access_token"), []);
-  // const apiUrl =
-  //   import.meta.env.VITE_BACKEND_ALIAS || "http://localhost:8000/chat";
+
   const apiUrl = "http://143.110.228.170:8000/chat";
 
   console.log("VITE_BACKEND_ALIAS:", import.meta.env.VITE_BACKEND_ALIAS);
