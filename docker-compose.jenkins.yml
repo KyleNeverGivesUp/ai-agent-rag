@@ -1,6 +1,9 @@
 services:
   jenkins:
-    build: ./jenkins
+    build:
+      context: ./jenkins
+      args:
+        DOCKER_GID: "987"
     container_name: jenkins
     restart: always
     command: --prefix=/ci
