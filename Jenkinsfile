@@ -4,20 +4,20 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        sh 'cd /home/kyle/Projects/ai-agent-rag && git pull origin main'
+        sh 'cd /work/ai-agent-rag && git pull origin main'
       }
     }
 
     stage('Build Frontend') {
       steps {
-        sh 'cd /home/kyle/Projects/ai-agent-rag/frontend && npm install && npm run build'
+        sh 'cd /work/ai-agent-rag/frontend && npm install && npm run build'
       }
     }
 
     stage('Deploy') {
       steps {
-        sh 'cd /home/kyle/Projects/ai-agent-rag && docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d'
-        sh 'cd /home/kyle/Projects/ai-agent-rag && docker-compose -f docker-compose.jenkins.yml up -d'
+        sh 'cd /work/ai-agent-rag && docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d'
+        sh 'cd /work/ai-agent-rag && docker-compose -f docker-compose.jenkins.yml up -d'
       }
     }
   }
