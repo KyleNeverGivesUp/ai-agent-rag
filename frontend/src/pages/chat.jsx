@@ -20,7 +20,9 @@ export default function Chat() {
 
   const token = useMemo(() => localStorage.getItem("access_token"), []);
 
-  const apiUrl = "http://143.110.228.170:8000/chat";
+  // const apiUrl = "http://143.110.228.170:8000/chat";
+
+  const apiUrl = "/api/chat";
 
   console.log(apiUrl);
 
