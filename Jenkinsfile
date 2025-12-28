@@ -17,7 +17,6 @@ pipeline {
     stage('Deploy') {
       steps {
         sh 'cd /home/kyle/Projects/ai-agent-rag && docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d'
-        sh 'cd /home/kyle/Projects/ai-agent-rag && docker-compose -f docker-compose.jenkins.yml up -d'
       }
     }
   }
