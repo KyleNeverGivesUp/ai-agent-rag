@@ -13,7 +13,7 @@ pipeline {
         sh 'cd /home/kyle/Projects/ai-agent-rag/frontend && npm install && npm run build'
       }
     }
-
+    //  Deploy Section
     stage('Deploy')  {
       steps {
         sh '''
