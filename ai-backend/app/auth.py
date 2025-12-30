@@ -24,6 +24,7 @@ _AVATAR_COLORS = [
     "#6366F1",
     "#14B8A6",
 ]
+_MAX_USERS = 100
 
 
 def _user_key(email: str) -> str:
@@ -56,6 +57,16 @@ def _verify_password(password: str, salt_b64: str, hash_b64: str) -> bool:
     )
     return hmac.compare_digest(derived, expected)
 
+
+def _ensure_capacity(cur):
+    cur.execute("SELECT COUNT(*) FROM users")
+    count = cur.fetchone()[0]
+    if count >= 1:
+        raise HTTPException(
+            status_code=403,
+            detail="User registration limit reached. Please try again later.",
+        )
+
 def _avatar_color(seed: str) -> str:
     digest = hashlib.sha256(seed.encode("utf-8")).hexdigest()
     idx = int(digest[:8], 16) % len(_AVATAR_COLORS)
@@ -77,11 +88,12 @@ def check_email(req: EmailCheckRequest):
     return {"exists": exists}
 
 
-@router.post("/register")
-def register(req: RegisterRequest):
+@router.post("/signup")
+def signup(req: RegisterRequest):
     email = _user_key(req.email)
     with get_db() as conn:
         with conn.cursor() as cur:
+            _ensure_capacity(cur)
             cur.execute("SELECT 1 FROM users WHERE email = %s", (email,))
             if cur.fetchone():
                 raise HTTPException(status_code=409, detail="User already exists")
@@ -94,7 +106,16 @@ def register(req: RegisterRequest):
                 (email, salt, hashed),
             )
         conn.commit()
-    return {"ok": True}
+    token = f"session-{uuid.uuid4()}"
+    return {
+        "ok": True,
+        "token": token,
+        "user": {
+            "email": email,
+            "initial": _initial(None, email),
+            "avatar_color": _avatar_color(email),
+        },
+    }
 
 
 @router.post("/login")

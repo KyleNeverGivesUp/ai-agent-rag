@@ -57,9 +57,22 @@ export default function Home() {
             understanding of CS fundamentals.
           </p>
           <p style={{ marginTop: "1rem" }}>
-            Currently, I am deep-diving into <strong>Full Stack AI development</strong>,
-            specifically building systems with <strong>RAG</strong> and the{" "}
-            <strong>Model Context Protocol (MCP)</strong>.
+              <section style={{ padding: "40px 20px", color: "#f9f9f9", borderRadius: "16px" }}>
+                <h2 style={{ fontSize: "1.8rem", color: "#8C1515" }}>Interactive AI Assistant</h2>
+                
+                <p style={{ fontSize: "1.1rem", lineHeight: "1.6", color: "#444" }}>
+                  I am currently deep-diving into <strong>Full-Stack AI application development</strong>. 
+                  I’ve built a real-world system from the ground up—from a high-performance backend 
+                  to a seamless user interface. It’s fully containerized and deployed on the cloud 
+                  using a professional CI/CD pipeline.
+                </p>
+
+                <div style={{ marginTop: "25px" }}>
+                  <Link to="/login" className="proj_github">
+                    Try the AI Application
+                  </Link>
+                </div>
+              </section>
           </p>
           <p style={{ marginTop: "1rem" }}>
             Prior to this, I conducted research on <strong>AI-based database engines</strong>,

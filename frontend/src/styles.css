@@ -309,6 +309,17 @@ h2 {
     padding: 0.5rem;
     border-radius: 4px;
     background-color: rgba(255, 0, 0, 0.05);
+    color: #b42318;
+    opacity: 0;
+    transform: translateY(-4px);
+    animation: error-fade-in 220ms ease forwards;
+}
+
+@keyframes error-fade-in {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .oauth-row {
@@ -573,3 +584,104 @@ h2 {
     color: #555;
     font-size: 0.95rem;
 }
+
+.proj_github {
+display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  margin: 0 5px;
+  background: linear-gradient(135deg, #6e8efb, #a777e3); /* 科技感渐变色 */
+  color: white !important; /* 确保文字是白色 */
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* 丝滑的过渡 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.proj_github:hover {
+  transform: translateY(-3px) scale(1.05); /* 向上浮动并微增大小 */
+  box-shadow: 0 8px 15px rgba(110, 142, 251, 0.4); /* 增加蓝色光晕 */
+  background: linear-gradient(135deg, #a777e3, #6e8efb); /* 渐变反转 */
+  letter-spacing: 0.5px; /* 文字轻微跳动感 */
+}
+
+/* 点击时的反馈 */
+.proj_github:active {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* 动态箭头：让用户感到“前进” */
+.proj_github::after {
+  content: '→';
+  position: absolute;
+  right: 20px;
+  opacity: 0;
+  transition: all 0.3s;
+}
+
+.proj_github:hover::after {
+  opacity: 1;
+  right: 15px;
+}
+
+.password-wrapper{
+    position: relative; /* For icon positioning */
+    margin-bottom: 1.5rem;
+    text-align: left;
+    display: flex;
+    transition: border-color 0.3s;
+    
+}
+
+.password-wrapper input{
+    flex: 1;
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 0.95rem;
+    border: 1px solid #e5e7eb;
+    outline: none;
+    border-radius: 10px;
+    background-color: #fff;
+    background: transparent;
+    transition: all 0.2s ease;
+}
+
+.password-wrapper  input:focus {
+    outline: none;
+    border-color: #6c63ff;
+    box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.18);
+    align-items: center;
+}
+
+.password-wrapper  input:focus + i {
+    color: var(--primary-color);
+}
+
+.password-toggle {
+  position: absolute;
+  background: transparent;
+  width: 20%;
+  border: none;
+  cursor: pointer;
+  top: 0;
+  bottom: 0;   
+  right: 0; 
+  display: flex;
+  align-items: center;
+  opacity: 0.6;
+  justify-content: center;
+  
+}
+
+.password-toggle:hover {
+    top: 0;
+    bottom: 0; 
+    background: rgb(160, 181, 181);
+    border-radius: 10px;
+
+}
+

@@ -61,7 +61,7 @@ export default function Login() {
       return;
     }
 
-    if (!emailChecked) {
+    if (!emailChecked || !emailExists) {
       setLoading(true);
       try {
         const response = await fetch(CHECK_EMAIL_URL, {
@@ -144,7 +144,7 @@ export default function Login() {
       <div className="login-wrapper">
         <div className="login-shell">
           <div className="login-card">
-          <h2>Sign in to AI Agent</h2>
+          <h2>Sign in to Kyle's AI Agent</h2>
           <p>Welcome back! Please sign in to continue</p>
 
           <div className="oauth-row">
@@ -167,7 +167,7 @@ export default function Login() {
             <span>or</span>
           </div>
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} >
             <label className="input-label" htmlFor="email">
               Email address
             </label>
@@ -196,14 +196,13 @@ export default function Login() {
                 <label className="input-label" htmlFor="password">
                   Password
                 </label>
-                <div className="input-group">
+                <div className="password-wrapper">
                   <input
                     id="password"
                     type={showPassword ? "text" : "password"}
                     name="password"
                     placeholder="Enter your password"
                     required
-                    className="password-input"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
                   />
@@ -219,6 +218,7 @@ export default function Login() {
               </>
             ) : null}
 
+            {/* <button type="button" className="login-btn" onClick={handleSubmit}> */}
             <button type="submit" className="login-btn">
               {loading ? "Please wait..." : "Continue"}{" "}
               <span className="btn-arrow">›</span>
@@ -227,14 +227,10 @@ export default function Login() {
 
           {showFormError ? <p id="error-msg">{error}</p> : null}
 
-          {/* <button type="button" className="passkey-btn">
-            Use passkey instead
-          </button> */}
         </div>
-        <div className="signup-card">
-          <span>Don't have an account?</span>
-          <Link to="/signup" className="chatbot-btn">Sign up</Link>
-          {/* <a href="#">Sign up</a> */}
+          <div className="signup-card">
+            <span>Don't have an account?</span>
+            <Link to="/signup">Sign up</Link>
           </div>
         </div>
       </div>
