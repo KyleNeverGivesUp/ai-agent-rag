@@ -73,7 +73,6 @@ export default function Login() {
           body: JSON.stringify({ email: trimmedEmail }),
         });
         // console.log('这里')
-        // console.log(response)
         if (!response.ok) {
           throw new Error("Email check failed.");
         }
