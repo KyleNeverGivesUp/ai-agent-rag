@@ -10,11 +10,20 @@ export default function Chat() {
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState("");
   const [sources, setSources] = useState([]);
+  const [userProfile, setUserProfile] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
+    const storedProfile = localStorage.getItem("user_profile");
     if (!token) {
       navigate("/login");
+    }
+    if (storedProfile) {
+      try {
+        setUserProfile(JSON.parse(storedProfile));
+      } catch {
+        setUserProfile(null);
+      }
     }
   }, [navigate]);
 
@@ -28,6 +37,7 @@ export default function Chat() {
 
   const handleLogout = () => {
     localStorage.removeItem("access_token");
+    localStorage.removeItem("user_profile");
     navigate("/login");
   };
 
@@ -82,9 +92,19 @@ export default function Chat() {
       <div className="chat-card">
         <div className="chat-header">
           <h1>Kyle's Chatbot</h1>
-          <button className="ghost-btn" onClick={handleLogout}>
-            Logout
-          </button>
+          <div className="chat-user">
+            {userProfile?.initial ? (
+              <div
+                className="user-avatar"
+                style={{ backgroundColor: userProfile.avatar_color }}
+              >
+                {userProfile.initial}
+              </div>
+            ) : null}
+            <button className="ghost-btn" onClick={handleLogout}>
+              Logout
+            </button>
+          </div>
         </div>
 
         <div className="chat-window">

@@ -31,11 +31,19 @@ def init_db():
                         sub TEXT PRIMARY KEY,
                         email TEXT NOT NULL,
                         email_verified BOOLEAN,
+                        given_name TEXT,
                         name TEXT,
                         picture TEXT,
+                        avatar_color TEXT,
                         created_at TIMESTAMPTZ DEFAULT NOW()
                     )
                     """
+                )
+                cur.execute(
+                    "ALTER TABLE google_users ADD COLUMN IF NOT EXISTS given_name TEXT"
+                )
+                cur.execute(
+                    "ALTER TABLE google_users ADD COLUMN IF NOT EXISTS avatar_color TEXT"
                 )
             conn.commit()
     except Exception as exc:

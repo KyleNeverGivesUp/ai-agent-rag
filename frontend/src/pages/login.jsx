@@ -24,23 +24,6 @@ export default function Login() {
     onSuccess: async (tokenResponse) => {
       console.log("Google token:", tokenResponse.access_token);
       try {
-        const response = await fetch(
-          "https://www.googleapis.com/oauth2/v3/userinfo",
-          {
-            headers: {
-              Authorization: `Bearer ${tokenResponse.access_token}`,
-            },
-          }
-        );
-        const profile = await response.json();
-        console.log("Google userinfo:", profile);
-        if (profile?.email) {
-          localStorage.setItem("google_email", profile.email);
-        }
-        if (profile?.sub) {
-          localStorage.setItem("google_sub", profile.sub);
-        }
-        localStorage.setItem("google_profile", JSON.stringify(profile));
         const authResponse = await fetch(GOOGLE_LOGIN_URL, {
           method: "POST",
           headers: {
@@ -55,12 +38,14 @@ export default function Login() {
         }
         const authData = await authResponse.json();
         localStorage.setItem("access_token", authData?.token || "google-token");
+        if (authData?.user) {
+          localStorage.setItem("user_profile", JSON.stringify(authData.user));
+        }
       } catch (err) {
-        console.error("Failed to fetch Google userinfo:", err);
+        console.error("Failed to complete Google login:", err);
         setError("Google login failed.");
         return;
       }
-      // TODO: Send token to backend /api/auth/google
       navigate("/chat");
     },
     onError: () => setError("Google login failed."),
@@ -130,7 +115,9 @@ export default function Login() {
 
         const data = await response.json();
         localStorage.setItem("access_token", data?.token || "email-token");
-        localStorage.setItem("email", trimmedEmail);
+        if (data?.user) {
+          localStorage.setItem("user_profile", JSON.stringify(data.user));
+        }
         navigate("/chat");
       } catch (err) {
         setError("Invalid email or password.");

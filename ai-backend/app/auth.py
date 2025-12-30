@@ -14,6 +14,17 @@ from .schemas import EmailCheckRequest, GoogleAuthRequest, LoginRequest, Registe
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
+_AVATAR_COLORS = [
+    "#8B5CF6",
+    "#3B82F6",
+    "#10B981",
+    "#F59E0B",
+    "#EF4444",
+    "#EC4899",
+    "#6366F1",
+    "#14B8A6",
+]
+
 
 def _user_key(email: str) -> str:
     return email.strip().lower()
@@ -44,6 +55,16 @@ def _verify_password(password: str, salt_b64: str, hash_b64: str) -> bool:
         100_000,
     )
     return hmac.compare_digest(derived, expected)
+
+def _avatar_color(seed: str) -> str:
+    digest = hashlib.sha256(seed.encode("utf-8")).hexdigest()
+    idx = int(digest[:8], 16) % len(_AVATAR_COLORS)
+    return _AVATAR_COLORS[idx]
+
+def _initial(given_name: str | None, email: str) -> str:
+    if given_name:
+        return given_name.strip()[:1].upper()
+    return email.strip()[:1].upper()
 
 
 @router.post("/check-email")
@@ -96,7 +117,14 @@ def login(req: LoginRequest):
     if not _verify_password(req.password, password_salt, password_hash):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     token = f"session-{uuid.uuid4()}"
-    return {"token": token, "user": {"email": email}}
+    return {
+        "token": token,
+        "user": {
+            "email": email,
+            "initial": _initial(None, email),
+            "avatar_color": _avatar_color(email),
+        },
+    }
 
 
 @router.post("/google")
@@ -124,6 +152,7 @@ async def auth_google(req: GoogleAuthRequest):
             "sub": payload.get("sub"),
             "email": payload.get("email"),
             "email_verified": payload.get("email_verified"),
+            "given_name": payload.get("given_name"),
             "name": payload.get("name"),
             "picture": payload.get("picture"),
         }
@@ -142,6 +171,7 @@ async def auth_google(req: GoogleAuthRequest):
             "sub": payload.get("sub"),
             "email": payload.get("email"),
             "email_verified": payload.get("email_verified"),
+            "given_name": payload.get("given_name"),
             "name": payload.get("name"),
             "picture": payload.get("picture"),
         }
@@ -149,24 +179,31 @@ async def auth_google(req: GoogleAuthRequest):
     if not user or not user.get("sub") or not user.get("email"):
         raise HTTPException(status_code=400, detail="Google profile incomplete")
 
+    user["initial"] = _initial(user.get("given_name"), user["email"])
+    user["avatar_color"] = _avatar_color(user["sub"])
+
     with get_db() as conn:
         with conn.cursor() as cur:
             cur.execute(
                 """
-                INSERT INTO google_users (sub, email, email_verified, name, picture)
-                VALUES (%s, %s, %s, %s, %s)
+                INSERT INTO google_users (sub, email, email_verified, given_name, name, picture, avatar_color)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
                 ON CONFLICT (sub) DO UPDATE SET
                     email = EXCLUDED.email,
                     email_verified = EXCLUDED.email_verified,
+                    given_name = EXCLUDED.given_name,
                     name = EXCLUDED.name,
-                    picture = EXCLUDED.picture
+                    picture = EXCLUDED.picture,
+                    avatar_color = EXCLUDED.avatar_color
                 """,
                 (
                     user["sub"],
                     user["email"],
                     user.get("email_verified"),
+                    user.get("given_name"),
                     user.get("name"),
                     user.get("picture"),
+                    user.get("avatar_color"),
                 ),
             )
         conn.commit()
