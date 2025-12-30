@@ -1,6 +1,9 @@
 # 🤖 AI Agent RAG Chatbot
 
-![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python) ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react) ![FastAPI](https://img.shields.io/badge/FastAPI-0.95+-009688?logo=fastapi) ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker) ![Jenkins](https://img.shields.io/badge/CI%2FCD-Jenkins-D24939?logo=jenkins)
+![React](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react)![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?logo=javascript&logoColor=F7DF1E)![Vite](https://img.shields.io/badge/Vite-5.4.0-646CFF?logo=vite&logoColor=white)![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python)![FastAPI](https://img.shields.io/badge/FastAPI-0.103.2-009688?logo=fastapi)![OpenAI](https://img.shields.io/badge/OpenAI-SDK-412991?logo=openai&logoColor=white)![Google%20OAuth](https://img.shields.io/badge/Google%20OAuth-0.13.4-4285F4?logo=google&logoColor=white)![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)![ChromaDB](https://img.shields.io/badge/ChromaDB-0.4.24-FF4F8B?logo=chromadb&logoColor=white)![Redis](https://img.shields.io/badge/Redis-4.6.13-DC382D?logo=redis&logoColor=white)![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)![Nginx](https://img.shields.io/badge/Nginx-alpine-009639?logo=nginx&logoColor=white)![Jenkins](https://img.shields.io/badge/CI%2FCD-Jenkins-D24939?logo=jenkins&logoColor=white)
+
+
+
 
 An end-to-end **Retrieval-Augmented Generation (RAG)** chatbot built with a production-style stack.
 This project currently provides a robust MVP covering ingestion, retrieval, and LLM generation, with a fully automated **Self-Hosted CI/CD pipeline**.
