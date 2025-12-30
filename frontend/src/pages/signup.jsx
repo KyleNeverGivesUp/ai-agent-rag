@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub, FaEye, FaEyeSlash } from "react-icons/fa";
 
-const SIGNUP_URL = "/auth/signup";
+const SIGNUP_URL = "/api/auth/signup";
 
 export default function Signup(){
     const navigate = useNavigate();

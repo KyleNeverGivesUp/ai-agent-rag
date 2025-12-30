@@ -6,9 +6,9 @@ import { FaGithub, FaEye, FaEyeSlash } from "react-icons/fa";
 import { GiFox } from "react-icons/gi";
 
 
-const CHECK_EMAIL_URL = "/auth/check-email";
-const LOGIN_URL = "/auth/login";
-const GOOGLE_LOGIN_URL = "/auth/google";
+const CHECK_EMAIL_URL = "/api/auth/check-email";
+const LOGIN_URL = "/api/auth/login";
+const GOOGLE_LOGIN_URL = "/api/auth/google";
 
 export default function Login() {
   const navigate = useNavigate();
