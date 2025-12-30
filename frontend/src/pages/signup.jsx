@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { GoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
 import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub, FaEye, FaEyeSlash } from "react-icons/fa";
@@ -15,6 +15,35 @@ export default function Signup(){
     const [emailChecked, setEmailChecked] = useState(false);
     const [emailExists, setEmailExists] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const googleLogin = useGoogleLogin({
+        scope: "openid email profile",
+        onSuccess: async (tokenResponse) => {
+            try {
+                const authResponse = await fetch("/api/auth/google", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        access_token: tokenResponse.access_token,
+                    }),
+                });
+                if (!authResponse.ok) {
+                    throw new Error("Google auth failed");
+                }
+                const authData = await authResponse.json();
+                localStorage.setItem("access_token", authData?.token || "google-token");
+                if (authData?.user) {
+                    localStorage.setItem("user_profile", JSON.stringify(authData.user));
+                }
+                navigate("/chat");
+            } catch (err) {
+                setError("Google login failed.");
+            }
+        },
+        onError: () => setError("Google login failed."),
+    });
 
     const signupSubmit = async (event)=>{
         event.preventDefault();
@@ -72,7 +101,7 @@ export default function Signup(){
                             <button className="oauth-btn" type="button" >
                                 <FaGithub className="text-xl" />
                             </button>
-                            <button className="oauth-btn" type="button" onClick={()=> GoogleLogin()}>
+                            <button className="oauth-btn" type="button" onClick={() => googleLogin()}>
                                 <FcGoogle className="text-xl"/>
                             </button>
                         </div>
