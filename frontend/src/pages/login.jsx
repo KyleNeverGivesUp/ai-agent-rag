@@ -2,24 +2,65 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import { FcGoogle } from "react-icons/fc";
-import { FaGithub } from "react-icons/fa";
+import { FaGithub, FaEye, FaEyeSlash } from "react-icons/fa";
 import { GiFox } from "react-icons/gi";
 
-const STATIC_USERNAME = "kyle";
-const STATIC_PASSWORD = "kyle";
-const STATIC_TOKEN = "kyle-token";
-// Backend login endpoint (disabled in static mode)
-// const API_URL = "http://localhost:8000/token";
+const CHECK_EMAIL_URL = "/auth/check-email";
+const LOGIN_URL = "/auth/login";
+const GOOGLE_LOGIN_URL = "/auth/google";
 
 export default function Login() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [emailChecked, setEmailChecked] = useState(false);
+  const [emailExists, setEmailExists] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const googleLogin = useGoogleLogin({
+    scope: "openid email profile",
     onSuccess: async (tokenResponse) => {
       console.log("Google token:", tokenResponse.access_token);
+      try {
+        const response = await fetch(
+          "https://www.googleapis.com/oauth2/v3/userinfo",
+          {
+            headers: {
+              Authorization: `Bearer ${tokenResponse.access_token}`,
+            },
+          }
+        );
+        const profile = await response.json();
+        console.log("Google userinfo:", profile);
+        if (profile?.email) {
+          localStorage.setItem("google_email", profile.email);
+        }
+        if (profile?.sub) {
+          localStorage.setItem("google_sub", profile.sub);
+        }
+        localStorage.setItem("google_profile", JSON.stringify(profile));
+        const authResponse = await fetch(GOOGLE_LOGIN_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            access_token: tokenResponse.access_token,
+          }),
+        });
+        if (!authResponse.ok) {
+          throw new Error("Google auth failed");
+        }
+        const authData = await authResponse.json();
+        localStorage.setItem("access_token", authData?.token || "google-token");
+      } catch (err) {
+        console.error("Failed to fetch Google userinfo:", err);
+        setError("Google login failed.");
+        return;
+      }
       // TODO: Send token to backend /api/auth/google
-      localStorage.setItem("access_token", "google-token");
       navigate("/chat");
     },
     onError: () => setError("Google login failed."),
@@ -28,43 +69,79 @@ export default function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError("");
+    const trimmedEmail = email.trim();
 
-    const username = event.target.username.value.trim();
-    const password = event.target.password.value.trim();
-
-    if (username !== STATIC_USERNAME || password !== STATIC_PASSWORD) {
-      setError("Invalid username or password.");
+    if (!trimmedEmail) {
+      setError("Email is required.");
       return;
     }
 
-    localStorage.setItem("access_token", STATIC_TOKEN);
-    navigate("/chat");
+    if (!emailChecked) {
+      setLoading(true);
+      try {
+        const response = await fetch(CHECK_EMAIL_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: trimmedEmail }),
+        });
+        // console.log('这里')
+        // console.log(response)
+        if (!response.ok) {
+          throw new Error("Email check failed.");
+        }
 
-    // Backend login flow (disabled in static mode)
-    // const formData = new URLSearchParams();
-    // formData.append("username", username);
-    // formData.append("password", password);
+        const data = await response.json();
+        const exists = Boolean(data?.exists);
+        setEmailChecked(true);
+        setEmailExists(exists);
 
-    // try {
-    //   const response = await fetch(API_URL, {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/x-www-form-urlencoded",
-    //     },
-    //     body: formData,
-    //   });
+        if (!exists) {
+          setError("Email does not exist");
+        }
+      } catch (err) {
+        setError("Email check failed. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
 
-    //   if (!response.ok) {
-    //     throw new Error("Login failed");
-    //   }
+    if (emailExists) {
+      if (!password.trim()) {
+        setError("Password is required.");
+        return;
+      }
 
-    //   const data = await response.json();
-    //   localStorage.setItem("access_token", data.access_token);
-    //   navigate("/chat");
-    // } catch (err) {
-    //   setError("Invalid username or password.");
-    // }
+      setLoading(true);
+      try {
+        const response = await fetch(LOGIN_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: trimmedEmail, password }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Login failed");
+        }
+
+        const data = await response.json();
+        localStorage.setItem("access_token", data?.token || "email-token");
+        localStorage.setItem("email", trimmedEmail);
+        navigate("/chat");
+      } catch (err) {
+        setError("Invalid email or password.");
+      } finally {
+        setLoading(false);
+      }
+    }
   };
+
+  const showEmailError = Boolean(error && emailChecked && !emailExists);
+  const showFormError = Boolean(error && !showEmailError);
 
   return (
     <div>
@@ -111,18 +188,57 @@ export default function Login() {
               <input
                 id="email"
                 type="email"
-                name="username"
+                name="email"
                 placeholder="Enter your email address"
                 required
+                value={email}
+                onChange={(event) => {
+                  setEmail(event.target.value);
+                  if (emailChecked) {
+                    setEmailChecked(false);
+                    setEmailExists(false);
+                    setPassword("");
+                  }
+                }}
               />
             </div>
+            {showEmailError ? <p id="error-msg">{error}</p> : null}
+
+            {emailChecked && emailExists ? (
+              <>
+                <label className="input-label" htmlFor="password">
+                  Password
+                </label>
+                <div className="input-group">
+                  <input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    placeholder="Enter your password"
+                    required
+                    className="password-input"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                  />
+                  <button
+                    type="button"
+                    className="password-toggle"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+                </div>
+              </>
+            ) : null}
 
             <button type="submit" className="login-btn">
-              Continue <span className="btn-arrow">›</span>
+              {loading ? "Please wait..." : "Continue"}{" "}
+              <span className="btn-arrow">›</span>
             </button>
           </form>
 
-          {error ? <p id="error-msg">{error}</p> : null}
+          {showFormError ? <p id="error-msg">{error}</p> : null}
 
           {/* <button type="button" className="passkey-btn">
             Use passkey instead
@@ -130,7 +246,8 @@ export default function Login() {
         </div>
         <div className="signup-card">
           <span>Don't have an account?</span>
-          <a href="#">Sign up</a>
+          <Link to="/signup" className="chatbot-btn">Sign up</Link>
+          {/* <a href="#">Sign up</a> */}
           </div>
         </div>
       </div>
