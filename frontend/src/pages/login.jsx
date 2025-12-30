@@ -5,6 +5,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FaGithub, FaEye, FaEyeSlash } from "react-icons/fa";
 import { GiFox } from "react-icons/gi";
 
+
 const CHECK_EMAIL_URL = "/auth/check-email";
 const LOGIN_URL = "/auth/login";
 const GOOGLE_LOGIN_URL = "/auth/google";
