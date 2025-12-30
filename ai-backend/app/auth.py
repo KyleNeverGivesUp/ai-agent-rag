@@ -61,7 +61,7 @@ def _verify_password(password: str, salt_b64: str, hash_b64: str) -> bool:
 def _ensure_capacity(cur):
     cur.execute("SELECT COUNT(*) FROM users")
     count = cur.fetchone()[0]
-    if count >= 1:
+    if count >= _MAX_USERS:
         raise HTTPException(
             status_code=403,
             detail="User registration limit reached. Please try again later.",
