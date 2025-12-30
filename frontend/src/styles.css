@@ -614,7 +614,7 @@ display: inline-flex;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* 动态箭头：让用户感到“前进” */
+/* 动态箭头：让用户感到“前进”  */
 .proj_github::after {
   content: '→';
   position: absolute;
