@@ -36,7 +36,7 @@ def _hash_password(password: str, salt: bytes | None = None) -> tuple[str, str]:
         salt = os.urandom(16)
     derived = hashlib.pbkdf2_hmac(
         "sha256",
-        password.encode("utf-8"  ),
+        password.encode("utf-8"   ),
         salt,
         100_000,
     )
