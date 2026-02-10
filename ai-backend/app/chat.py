@@ -35,7 +35,7 @@ def init_chroma():
             print("Chroma not ready yet:", exc)
             time.sleep(2)
 
-    raise RuntimeError("ChromaDB not ready after waiting")
+    raise RuntimeError("ChromaDB not ready after waiting!")
 
 
 def set_collection(coll):
