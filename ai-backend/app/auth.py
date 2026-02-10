@@ -28,7 +28,7 @@ _MAX_USERS = 100
 
 
 def _user_key(email: str) -> str:
-    return email.strip().lower()
+    return email.strip().lower ()
 
 
 def _hash_password(password: str, salt: bytes | None = None) -> tuple[str, str]:
