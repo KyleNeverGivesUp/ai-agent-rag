@@ -45,7 +45,7 @@ def set_collection(coll):
 
 def _require_collection():
     if collection is None:
-        raise RuntimeError("Chroma collection is not initialized     ")
+        raise RuntimeError("Chroma collection is not initialized")
 
 
 @router.post("/ingest")
